@@ -56,7 +56,7 @@ class Damper(optim.Optimizer):
                 g = p.grad
                 if g is None:
                     continue
-                if g
+                if g.is_sparse:
                     raise RuntimeError("Damper doesn't support sparse gradients")
 
                 lr = group["lr"]
