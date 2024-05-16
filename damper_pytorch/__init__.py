@@ -77,7 +77,7 @@ class Damper(optim.Optimizer):
                 b = state["last_grad"] / (eps + std)
                 dot_prod = a * b
                 lr = state["lr"] * torch.exp(dot_prod)
-                lr = torch.maximum(lr, eps)
+                lr = torch.clamp(lr, min=eps)
 
                 actual_variances = torch.square(p.grad)
                 variances = torch.square(std)
