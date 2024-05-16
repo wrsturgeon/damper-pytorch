@@ -81,9 +81,7 @@ class Damper(optim.Optimizer):
 
                 actual_variances = torch.square(p.grad)
                 variances = torch.square(std)
-                dLds = (variances - actual_variances) / (
-                    eps + torch.abs(torch.no_grad(std))
-                )
+                dLds = (variances - actual_variances) / (eps + torch.abs(std))
                 std = std - std_update * dLds
 
                 state["lr"] = lr
