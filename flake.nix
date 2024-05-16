@@ -16,8 +16,8 @@
       self,
     }:
     let
-      pname = "damper";
-      pyname = "damper";
+      pname = "damper-pytorch";
+      pyname = "damper_pytorch";
       version = "0.0.1";
       src = ./.;
       default-pkgs = p: py: with py; [ torch ];
