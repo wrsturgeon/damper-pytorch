@@ -4,8 +4,10 @@ from typing import Callable, Optional, Self
 
 
 hyperparameters = {
+    "lr": {"type": float, "default": 0.01},
     "sensitivity": {"type": float, "default": 0.05},
-    "std_update": {"type": float, "default": 0.2},
+    "std_update": {"type": float, "default": 0.05},
+    "epsilon": {"type": float, "default": 1e-5},
 }
 
 
@@ -14,10 +16,10 @@ class Damper(optim.Optimizer):
     def __init__(
         self,
         params,
-        lr: float = 1e-2,
+        lr: float = hyperparameters["lr"]["default"],
         sensitivity: float = hyperparameters["sensitivity"]["default"],
         std_update: float = hyperparameters["std_update"]["default"],
-        epsilon: float = 1e-5,
+        epsilon: float = hyperparameters["epsilon"]["default"],
     ) -> Self:
 
         if lr <= 0:
