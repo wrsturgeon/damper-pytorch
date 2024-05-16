@@ -64,14 +64,7 @@ class Damper(optim.Optimizer):
                     state["lr"] = group["lr"]
                     state["std"] = torch.ones_like(p)
                     state["last_grad"] = torch.zeros_like(p)
-
                 std = state["std"]
-                actual_variances = torch.square(p.grad)
-                variances = torch.square(std)
-                dLds = (variances - actual_variances) / (
-                    eps + torch.abs(torch.no_grad(std))
-                )
-                std = std - std_update * dLds
 
                 # TODO: variance instead of dividing by std twice
                 a = p.grad / (eps + std)
@@ -79,6 +72,13 @@ class Damper(optim.Optimizer):
                 dot_prod = a * b
                 lr = state["lr"] * torch.exp(dot_prod)
                 lr = torch.maximum(lr, eps)
+
+                actual_variances = torch.square(p.grad)
+                variances = torch.square(std)
+                dLds = (variances - actual_variances) / (
+                    eps + torch.abs(torch.no_grad(std))
+                )
+                std = std - std_update * dLds
 
                 state["lr"] = lr
                 state["std"] = std
