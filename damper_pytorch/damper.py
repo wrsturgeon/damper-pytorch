@@ -3,14 +3,20 @@ from torch import optim
 from typing import Optional, Self
 
 
+hyperparameters = {
+    "sensitivity": {"type": float, "default": 0.05},
+    "std_update": {"type": float, "default": 0.2},
+}
+
+
 class Damper(optim.Optimizer):
 
     def __init__(
         self,
         params,
         lr: float = 1e-2,
-        sensitivity: float = 0.05,
-        std_update: float = 0.2,
+        sensitivity: float = hyperparameters["sensitivity"]["default"],
+        std_update: float = hyperparameters["std_update"]["default"],
         epsilon: float = 1e-5,
     ) -> Self:
 
