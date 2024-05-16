@@ -53,9 +53,10 @@ class Damper(optim.Optimizer):
 
         for group in self.param_groups:
             for p in group["params"]:
-                if p.grad is None:
+                g = p.grad
+                if g is None:
                     continue
-                if p.grad.is_sparse:
+                if g
                     raise RuntimeError("Damper doesn't support sparse gradients")
 
                 lr = group["lr"]
@@ -73,21 +74,21 @@ class Damper(optim.Optimizer):
                 std = state["std"]
 
                 # TODO: variance instead of dividing by std twice
-                a = p.grad / (eps + std)
+                a = g / (eps + std)
                 b = state["last_grad"] / (eps + std)
                 dot_prod = a * b
                 lr = state["lr"] * torch.exp(dot_prod)
                 lr = torch.clamp(lr, min=eps)
 
-                actual_variances = torch.square(p.grad)
+                actual_variances = torch.square(g)
                 variances = torch.square(std)
                 dLds = (variances - actual_variances) / (eps + torch.abs(std))
                 std = std - std_update * dLds
 
                 state["lr"] = lr
                 state["std"] = std
-                state["last_grad"] = p.grad
+                state["last_grad"] = g
 
-                p.add_(p, alpha=-lr)
+                p.add_(-lr * g)
 
         return loss
